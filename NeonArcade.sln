@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36705.20 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "neonarcade.client", "neonarcade.client\neonarcade.client.esproj", "{553F0BC5-CD1C-7F34-B510-C8ADBDFDCBB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonArcade.Server", "NeonArcade.Server\NeonArcade.Server.csproj", "{F5E56356-B895-4C84-947B-1B5479F4BECF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{553F0BC5-CD1C-7F34-B510-C8ADBDFDCBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{553F0BC5-CD1C-7F34-B510-C8ADBDFDCBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{553F0BC5-CD1C-7F34-B510-C8ADBDFDCBB8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{553F0BC5-CD1C-7F34-B510-C8ADBDFDCBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{553F0BC5-CD1C-7F34-B510-C8ADBDFDCBB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{553F0BC5-CD1C-7F34-B510-C8ADBDFDCBB8}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F5E56356-B895-4C84-947B-1B5479F4BECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5E56356-B895-4C84-947B-1B5479F4BECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5E56356-B895-4C84-947B-1B5479F4BECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5E56356-B895-4C84-947B-1B5479F4BECF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0970190C-F3B1-4BC6-9C0D-20773FB83850}
+	EndGlobalSection
+EndGlobal
