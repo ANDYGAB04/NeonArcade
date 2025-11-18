@@ -50,6 +50,12 @@
         //Timestamps:
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+
+        public List<OrderItem>? OrderItems { get; set; }
+
+        public List<CartItem>? CartItems { get; set; }
+
+
     }
 
 }
