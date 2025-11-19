@@ -1,6 +1,12 @@
-@NeonArcade.Server_HostAddress = http://localhost:5091
+@URL = http://localhost:5091
 
-GET {{NeonArcade.Server_HostAddress}}/weatherforecast/
+GET {{URL}}/weatherforecast/
 Accept: application/json
 
 ###
+GET {{URL}}/api/Games
+Accept: application/json
+
+###
+GET {{URL}}/api/Game/1
+Accept: application/json
