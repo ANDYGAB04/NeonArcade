@@ -1,6 +1,66 @@
-@NeonArcade.Server_HostAddress = http://localhost:5091
+@URL = http://localhost:5091
 
-GET {{NeonArcade.Server_HostAddress}}/weatherforecast/
+GET {{URL}}/weatherforecast/
 Accept: application/json
 
 ###
+GET {{URL}}/api/Games
+Accept: application/json
+
+###
+GET {{URL}}/api/Games/2
+Accept: application/json
+
+###
+POST {{URL}}/api/Games
+Content-Type: application/json
+
+{
+  "title": "Cyberpunk 2077",
+  "description": "An open-world, action-adventure RPG set in Night City.",
+  "shortDescription": "Action RPG in a cyberpunk future",
+  "price": 59.99,
+  "coverImageUrl": "https://example.com/cyberpunk.jpg",
+  "developer": "CD Projekt Red",
+  "publisher": "CD Projekt",
+  "releaseDate": "2020-12-10T00:00:00",
+  "ageRating": "M",
+  "genres": ["RPG", "Action"],
+  "platforms": ["PC", "PlayStation", "Xbox"],
+  "tags": ["Open World", "Singleplayer"],
+  "minimumRequirements": "CPU: Intel Core i5, RAM: 8GB",
+  "recommendedRequirements": "CPU: Intel Core i7, RAM: 16GB",
+  "stockQuantity": 100,
+  "isAvailable": true,
+  "isFeatured": true,
+  "screenshotUrls": []
+}
+
+###
+PUT {{URL}}/api/Games/2
+Content-Type: application/json
+{
+  "id": 2,
+  "title": "Cyberpunk 20776",
+  "description": "An open-world, action-adventure RPG set in Night City.",
+  "shortDescription": "Action RPG in a cyberpunk future",
+  "price": 59.99,
+  "coverImageUrl": "https://example.com/cyberpunk.jpg",
+  "developer": "CD Projekt Red",
+  "publisher": "CD Projekt",
+  "releaseDate": "2020-12-10T00:00:00",
+  "ageRating": "M",
+  "genres": ["RPG", "Action"],
+  "platforms": ["PC", "PlayStation", "Xbox"],
+  "tags": ["Open World", "Singleplayer"],
+  "minimumRequirements": "CPU: Intel Core i5, RAM: 8GB",
+  "recommendedRequirements": "CPU: Intel Core i7, RAM: 16GB",
+  "stockQuantity": 100,
+  "isAvailable": true,
+  "isFeatured": true,
+  "screenshotUrls": []
+}
+
+###
+DELETE {{URL}}/api/Games/2
+Accept: application/json
