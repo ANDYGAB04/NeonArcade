@@ -62,5 +62,5 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{URL}}/api/Games/2
+DELETE {{URL}}/api/Games/1
 Accept: application/json
