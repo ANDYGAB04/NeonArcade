@@ -4,7 +4,7 @@ GET {{URL}}/weatherforecast/
 Accept: application/json
 
 ###
-GET {{URL}}/api/Games
+GET {{URL}}/api/Games?sortBy=title&sortOrder=asc
 Accept: application/json
 
 ###
@@ -16,7 +16,7 @@ POST {{URL}}/api/Games
 Content-Type: application/json
 
 {
-  "title": "Cyberpunk 2077",
+  "title": "ayberpunk 2077",
   "description": "An open-world, action-adventure RPG set in Night City.",
   "shortDescription": "Action RPG in a cyberpunk future",
   "price": 59.99,

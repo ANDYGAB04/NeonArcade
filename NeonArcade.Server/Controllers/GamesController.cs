@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NeonArcade.Server.Data;
 using NeonArcade.Server.Models;
+using NeonArcade.Server.Models.DTOs;
 
 namespace NeonArcade.Server.Controllers
 {
@@ -18,10 +19,50 @@ namespace NeonArcade.Server.Controllers
 
         //GET: /Games
         [HttpGet]
-        public async Task<IActionResult> GetGames()
+        public async Task<ActionResult<PagedResult<Game>>> GetGames([FromQuery] GameQueryParameters parameters)
         {
-            var games = await _context.Games.ToListAsync();
-            return Ok(games);
+            var query = _context.Games.AsQueryable();
+            if(!string.IsNullOrEmpty(parameters.SearchTerm))
+            {
+                query = query.Where(g => g.Title.ToLower().Contains(parameters.SearchTerm.ToLower()) || g.Description.ToLower().Contains(parameters.SearchTerm.ToLower()));
+            }
+            if(parameters.MinPrice.HasValue)
+            {
+                query = query.Where(g => g.Price >= parameters.MinPrice.Value);
+            }
+            if(parameters.MaxPrice.HasValue)
+            {
+                query = query.Where(g => g.Price <= parameters.MaxPrice.Value);
+            }
+            if(parameters.IsAvailable.HasValue)
+            {
+                query = query.Where(g => g.IsAvailable == parameters.IsAvailable.Value);
+            }
+            if(parameters.IsFeatured.HasValue)
+            {
+                query = query.Where(g => g.IsFeatured == parameters.IsFeatured.Value);
+            }
+            // Sorting
+            if(!string.IsNullOrEmpty(parameters.SortBy))
+            {
+                bool ascending = parameters.SortOrder?.ToLower() != "desc";
+                query = parameters.SortBy.ToLower() switch
+                {
+                    "title" => ascending ? query.OrderBy(g => g.Title) : query.OrderByDescending(g => g.Title),
+                    "price" => ascending ? query.OrderBy(g => g.Price) : query.OrderByDescending(g => g.Price),
+                    "releasedate" => ascending ? query.OrderBy(g => g.ReleaseDate) : query.OrderByDescending(g => g.ReleaseDate),
+                    _ => query
+                };
+            }
+            else
+            {
+                query = query.OrderByDescending(g => g.CreatedAt);
+            }
+            var totalCount = await query.CountAsync();
+            query = query.Skip((parameters.PageNumber - 1) * parameters.PageSize).Take(parameters.PageSize);
+            var games = await query.ToListAsync();
+            var result = new PagedResult<Game>(games, totalCount, parameters.PageNumber, parameters.PageSize);
+            return Ok(result);
         }
 
         //GET: /Games/{id}
