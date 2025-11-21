@@ -27,9 +27,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
 
 builder.Services.AddIdentityApiEndpoints<User>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -43,6 +47,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     });
 
 var app = builder.Build();
+
+// Seed roles and admin user
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await DbSeeder.SeedRolesAndAdminAsync(services);
+}
 
 app.UseDefaultFiles();
 app.MapStaticAssets();
@@ -64,6 +75,7 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapIdentityApi<User>();
