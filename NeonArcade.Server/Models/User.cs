@@ -3,7 +3,7 @@
 
 namespace NeonArcade.Server.Models
 {
-    public class User : IdentityUser<int>
+    public class User : IdentityUser
     {
         public string ProfilePictureUrl { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;

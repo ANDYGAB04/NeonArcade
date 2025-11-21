@@ -1,0 +1,19 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+
+  "AdminUser": {
+    "Email": "your-admin-email@example.com",
+    "Password": "YourSecurePassword123!",
+    "FirstName": "Admin",
+    "LastName": "User"
+  },
+
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=Name fo your Database-Server;Initial Catalog=NeonArcade;Integrated Security=True;Pooling=False;Encrypt=True;Trust Server Certificate=True"
+  }
+}

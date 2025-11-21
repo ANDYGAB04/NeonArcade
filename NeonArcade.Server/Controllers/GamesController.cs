@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NeonArcade.Server.Data;
 using NeonArcade.Server.Models;
@@ -17,8 +18,9 @@ namespace NeonArcade.Server.Controllers
             _context = context;
         }
 
-        //GET: /Games
+        //GET: /Games (Public - No Authorization Required)
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<PagedResult<Game>>> GetGames([FromQuery] GameQueryParameters parameters)
         {
             var query = _context.Games.AsQueryable();
@@ -65,8 +67,9 @@ namespace NeonArcade.Server.Controllers
             return Ok(result);
         }
 
-        //GET: /Games/{id}
+        //GET: /Games/{id} (Public - No Authorization Required)
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetGame(int id)
         {
             var game = await _context.Games.FindAsync(id);
@@ -77,8 +80,9 @@ namespace NeonArcade.Server.Controllers
             return Ok(game);
         }
 
-        //POST: /Games
+        //POST: /Games (Admin Only)
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Game>> CreateGame([FromBody] Game game)
         {
             if (!ModelState.IsValid)
@@ -93,8 +97,9 @@ namespace NeonArcade.Server.Controllers
             return CreatedAtAction(nameof(GetGame), new { id = game.Id }, game);
         }
 
-        //PUT: /Games/{id}
+        //PUT: /Games/{id} (Admin Only)
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateGame(int id,[FromBody] Game updateGame)
         {
             var game = await _context.Games.FindAsync(id);
@@ -133,8 +138,9 @@ namespace NeonArcade.Server.Controllers
             return NoContent();
         }
 
-        //DELETE: /Games/{id}
+        //DELETE: /Games/{id} (Admin Only)
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteGame(int id)
         {
             var game = await _context.Games.FindAsync(id);
