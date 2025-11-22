@@ -6,7 +6,6 @@ namespace NeonArcade.Server.Repositories.Interfaces
     public interface IRepository<T> where  T: class
     {
         Task<T?> GetByIdAsync(int id);
-
         Task<IEnumerable<T>> GetAllAsync(
             Expression<Func<T, bool>>? filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
@@ -24,9 +23,6 @@ namespace NeonArcade.Server.Repositories.Interfaces
         Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
         Task<T?> GetByIdWithIncludesAsync(int id, params Expression<Func<T, object>>[] includes);
-        Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
-        Task DeleteAsync(T entity);
     }
 }

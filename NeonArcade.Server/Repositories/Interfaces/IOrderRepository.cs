@@ -7,7 +7,7 @@ namespace NeonArcade.Server.Repositories.Interfaces
         Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId);
         Task<IEnumerable<Order>> GetOrdersByStatusAsync(string status);
         Task<Order?> GetOrderByNumberAsync(string orderNumber);
-        Task<Order?> GetOrderWithItemsAsync(int orderId);  // Include OrderItems and Games
+        Task<Order?> GetOrderWithItemsAsync(int orderId);
         Task<IEnumerable<Order>> GetRecentOrdersAsync(int count = 10);
         Task<decimal> GetTotalRevenueAsync();
         Task<decimal> GetRevenueByPeriodAsync(DateTime startDate, DateTime endDate);
