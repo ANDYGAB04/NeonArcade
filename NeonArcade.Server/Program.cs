@@ -2,7 +2,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NeonArcade.Server.Data;
+using NeonArcade.Server.Middleware;
 using NeonArcade.Server.Models;
+using NeonArcade.Server.Repositories.Implementations;
+using NeonArcade.Server.Repositories.Interfaces;
+using NeonArcade.Server.Services.Implementations;
+using NeonArcade.Server.Services.Interfaces;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +31,13 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+builder.Services.AddScoped<IGameService, GameService>();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -54,6 +66,8 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     await DbSeeder.SeedRolesAndAdminAsync(services);
 }
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseDefaultFiles();
 app.MapStaticAssets();
