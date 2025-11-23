@@ -1,4 +1,6 @@
 ﻿using NeonArcade.Server.Models;
+using NeonArcade.Server.Models.DTOs;
+using NeonArcade.Server.Models.Extensions;
 using NeonArcade.Server.Repositories.Interfaces;
 using NeonArcade.Server.Services.Interfaces;
 
@@ -15,12 +17,13 @@ namespace NeonArcade.Server.Services.Implementations
             _logger = logger;
         }
 
-        public async Task<IEnumerable<CartItem>> GetCartAsync(string userId)
+        public async Task<IEnumerable<CartItemResponse>> GetCartAsync(string userId)
         {
-            return await _unitOfWork.Carts.GetCartWithGamesAsync(userId);
+            var cartItems = await _unitOfWork.Carts.GetCartWithGamesAsync(userId);
+            return cartItems.ToResponse();
         }
 
-        public async Task<CartItem> AddToCartAsync(string userId, int gameId, int quantity)
+        public async Task<CartItemResponse> AddToCartAsync(string userId, int gameId, int quantity)
         {
             var game = await _unitOfWork.Games.GetByIdAsync(gameId);
 
@@ -34,7 +37,7 @@ namespace NeonArcade.Server.Services.Implementations
 
             if (existingItem != null)
             {
-                
+                // Check stock for the NEW total quantity (existing + new)
                 var newTotalQuantity = existingItem.Quantity + quantity;
                 var hasStock = await _unitOfWork.Games.IsGameInStockAsync(gameId, newTotalQuantity);
 
@@ -43,14 +46,16 @@ namespace NeonArcade.Server.Services.Implementations
 
                 existingItem.Quantity = newTotalQuantity;
                 existingItem.SubTotal = existingItem.Price * existingItem.Quantity;
+                existingItem.Game = game; // Ensure game is loaded for DTO mapping
                 await _unitOfWork.SaveChangesAsync();
                 
                 _logger.LogInformation("User {UserId} updated cart: Game {GameId} quantity from {OldQuantity} to {NewQuantity}", 
                     userId, gameId, existingItem.Quantity - quantity, existingItem.Quantity);
                 
-                return existingItem;
+                return existingItem.ToResponse();
             }
 
+            // For new items, check stock for the requested quantity
             var hasStockForNew = await _unitOfWork.Games.IsGameInStockAsync(gameId, quantity);
 
             if (!hasStockForNew)
@@ -62,7 +67,8 @@ namespace NeonArcade.Server.Services.Implementations
                 GameId = gameId,
                 Price = game.Price,
                 Quantity = quantity,
-                SubTotal = game.Price * quantity
+                SubTotal = game.Price * quantity,
+                Game = game // Set game for DTO mapping
             };
             
             await _unitOfWork.Carts.AddAsync(cartItem);
@@ -70,10 +76,10 @@ namespace NeonArcade.Server.Services.Implementations
 
             _logger.LogInformation("User {UserId} added {Quantity}x Game {GameId} to cart", userId, quantity, gameId);
 
-            return cartItem;
+            return cartItem.ToResponse();
         }
 
-        public async Task<CartItem> UpdateCartItemAsync(string userId, int gameId, int quantity)
+        public async Task<CartItemResponse> UpdateCartItemAsync(string userId, int gameId, int quantity)
         {
             var cartItem = await _unitOfWork.Carts.GetCartItemAsync(userId, gameId);
 
@@ -91,11 +97,17 @@ namespace NeonArcade.Server.Services.Implementations
             cartItem.Quantity = quantity;
             cartItem.SubTotal = cartItem.Price * quantity;
 
+            // Load game for DTO mapping
+            if (cartItem.Game == null)
+            {
+                cartItem.Game = await _unitOfWork.Games.GetByIdAsync(gameId);
+            }
+
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("User {UserId} updated Game {GameId} quantity to {Quantity} in cart", userId, gameId, quantity);
 
-            return cartItem;
+            return cartItem.ToResponse();
         }
 
         public async Task<bool> RemoveFromCartAsync(string userId, int gameId)
@@ -112,6 +124,7 @@ namespace NeonArcade.Server.Services.Implementations
 
             return true;
         }
+
         public async Task<bool> ClearCartAsync(string userId)
         {
             await _unitOfWork.Carts.ClearCartAsync(userId);
@@ -136,6 +149,5 @@ namespace NeonArcade.Server.Services.Implementations
         {
             return await _unitOfWork.Carts.IsGameInCartAsync(userId, gameId);
         }
-
     }
 }
