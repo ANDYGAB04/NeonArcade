@@ -12,13 +12,10 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
-// Add CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -60,7 +57,6 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 var app = builder.Build();
 
-// Seed roles and admin user
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -72,7 +68,6 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseDefaultFiles();
 app.MapStaticAssets();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -84,7 +79,6 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// Use CORS before authentication
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
