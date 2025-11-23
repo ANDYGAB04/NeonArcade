@@ -8,18 +8,15 @@ namespace NeonArcade.Server.Repositories.Implementations
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context;
-        
+        private readonly ApplicationDbContext _context;     
         public Repository(ApplicationDbContext context) 
         {
             _context = context;
         }
-
         public async Task<T?> GetByIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
-
         public async Task<IEnumerable<T>> GetAllAsync(
             Expression<Func<T, bool>>? filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
@@ -44,7 +41,6 @@ namespace NeonArcade.Server.Repositories.Implementations
             
             return await query.ToListAsync();
         }
-
         public async Task<PagedResult<T>> GetPagedAsync(
             int pageNumber,
             int pageSize,
@@ -78,7 +74,6 @@ namespace NeonArcade.Server.Repositories.Implementations
             
             return new PagedResult<T>(items, totalCount, pageNumber, pageSize);
         }
-
         public async Task<T?> GetByIdWithIncludesAsync(
             int id, 
             params Expression<Func<T, object>>[] includes)
@@ -92,22 +87,18 @@ namespace NeonArcade.Server.Repositories.Implementations
             
             return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
-
         public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
-
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>().Where(predicate).ToListAsync();
         }
-
         public async Task<bool> ExistsAsync(int id)
         {
             return await _context.Set<T>().AnyAsync(e => EF.Property<int>(e, "Id") == id);
         }
-
         public async Task<int> CountAsync()
         {
             return await _context.Set<T>().CountAsync();
