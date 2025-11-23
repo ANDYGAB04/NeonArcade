@@ -10,6 +10,7 @@ namespace NeonArcade.Server.Repositories.Interfaces
         Task ClearCartAsync(string userId);
         Task<decimal> GetCartTotalAsync(string userId);
         Task<int> GetCartItemCountAsync(string userId);
-        Task<IEnumerable<CartItem>> GetCartWithGamesAsync(string userId);  // Include Game details
+        Task<IEnumerable<CartItem>> GetCartWithGamesAsync(string userId);
+        Task<CartItem> AddAsync(CartItem cartItem);
     }
 }

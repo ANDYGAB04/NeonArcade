@@ -63,5 +63,11 @@ namespace NeonArcade.Server.Repositories.Implementations
                 .Where(ci => ci.UserId == userId)
                 .ToListAsync();
         }
+
+        public async Task<CartItem> AddAsync(CartItem cartItem)
+        {
+            await _context.CartItems.AddAsync(cartItem);
+            return cartItem;
+        }
     }
 }
