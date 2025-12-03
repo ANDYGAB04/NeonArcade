@@ -11,5 +11,6 @@ namespace NeonArcade.Server.Repositories.Interfaces
         Task<IEnumerable<Order>> GetRecentOrdersAsync(int count = 10);
         Task<decimal> GetTotalRevenueAsync();
         Task<decimal> GetRevenueByPeriodAsync(DateTime startDate, DateTime endDate);
+        Task<Order> AddAsync(Order order);
     }
 }

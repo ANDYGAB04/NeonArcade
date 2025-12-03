@@ -71,5 +71,10 @@ namespace NeonArcade.Server.Repositories.Implementations
                        o.OrderDate <= endDate)
                 .SumAsync(o => o.TotalAmount);
         }
+        public async Task<Order> AddAsync(Order order)
+        {
+            await _context.Orders.AddAsync(order);
+            return order;
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace NeonArcade.Server.Services.Implementations
 
             if (existingItem != null)
             {
-                // Check stock for the NEW total quantity (existing + new)
+                
                 var newTotalQuantity = existingItem.Quantity + quantity;
                 var hasStock = await _unitOfWork.Games.IsGameInStockAsync(gameId, newTotalQuantity);
 
@@ -46,7 +46,7 @@ namespace NeonArcade.Server.Services.Implementations
 
                 existingItem.Quantity = newTotalQuantity;
                 existingItem.SubTotal = existingItem.Price * existingItem.Quantity;
-                existingItem.Game = game; // Ensure game is loaded for DTO mapping
+                existingItem.Game = game;
                 await _unitOfWork.SaveChangesAsync();
                 
                 _logger.LogInformation("User {UserId} updated cart: Game {GameId} quantity from {OldQuantity} to {NewQuantity}", 
@@ -55,7 +55,7 @@ namespace NeonArcade.Server.Services.Implementations
                 return existingItem.ToResponse();
             }
 
-            // For new items, check stock for the requested quantity
+            
             var hasStockForNew = await _unitOfWork.Games.IsGameInStockAsync(gameId, quantity);
 
             if (!hasStockForNew)
@@ -68,7 +68,7 @@ namespace NeonArcade.Server.Services.Implementations
                 Price = game.Price,
                 Quantity = quantity,
                 SubTotal = game.Price * quantity,
-                Game = game // Set game for DTO mapping
+                Game = game 
             };
             
             await _unitOfWork.Carts.AddAsync(cartItem);
@@ -97,7 +97,7 @@ namespace NeonArcade.Server.Services.Implementations
             cartItem.Quantity = quantity;
             cartItem.SubTotal = cartItem.Price * quantity;
 
-            // Load game for DTO mapping
+            
             if (cartItem.Game == null)
             {
                 cartItem.Game = await _unitOfWork.Games.GetByIdAsync(gameId);
