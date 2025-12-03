@@ -48,4 +48,54 @@ namespace NeonArcade.Server.Models.Extensions
             };
         }
     }
+
+    public static class OrderExtensions
+    {
+        public static OrderResponse ToResponse(this Order order)
+        {
+            if (order == null)
+                throw new ArgumentNullException(nameof(order));
+            return new OrderResponse
+            {
+                Id = order.Id,
+                OrderNumber = order.OrderNumber,
+                Status= order.Status,
+                OrderDate = order.OrderDate,
+                TotalAmount = order.TotalAmount,
+                UserId= order.UserId,
+                UserEmail = order.User?.Email?? string.Empty,
+                UserFullName = order.User != null
+                  ? $"{order.User.FirstName} {order.User.LastName}".Trim()
+                  : string.Empty,
+                OrderItems = order.OrderItems?.Select(oi => oi.ToResponse()).ToList() ?? new()
+
+            };
+
+        }
+        public static IEnumerable<OrderResponse> ToResponse(this IEnumerable<Order> orders)
+        {
+            return orders.Select(o => o.ToResponse());
+        }
+
+    }
+    public static class OrderItemExtensions
+    {
+        public static OrderItemResponse ToResponse(this OrderItem orderItem)
+        {
+            if (orderItem == null)
+                throw new ArgumentNullException(nameof(orderItem));
+            return new OrderItemResponse
+            {
+                Id = orderItem.Id,
+                GameId = orderItem.GameId,
+                Price = orderItem.Price,
+                Quantity = orderItem.Quantity,
+                SubTotal = orderItem.SubTotal,
+                GameKey = orderItem.GameKey,
+                GameTitle = orderItem.Game?.Title ?? string.Empty,
+                Game = orderItem.Game?.ToSummary()
+            };
+        }
+      
+    }
 }
