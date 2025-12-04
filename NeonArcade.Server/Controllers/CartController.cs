@@ -20,9 +20,6 @@ namespace NeonArcade.Server.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get all items in the authenticated user's cart
-        /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<CartItemResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
