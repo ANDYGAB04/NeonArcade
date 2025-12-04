@@ -74,6 +74,125 @@ namespace NeonArcade.Server.Services.Implementations
 
             return order;
         }
+
+        public async Task<Order> UpdateOrderAsync(int orderId, Order order)
+        {
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+            var existingOrder = await _unitOfWork.Orders.GetByIdAsync(orderId);
+            if(existingOrder == null)
+            {
+                throw new KeyNotFoundException($"Order with ID {orderId} not found");
+            }
+            var validStatuses = new[] { "Pending", "Processing", "Completed", "Cancelled", "Refunded" };
+            if (!validStatuses.Contains(order.Status))
+                throw new ArgumentException($"Invalid status. Allowed: {string.Join(", ", validStatuses)}");
+            
+            if (existingOrder.Status == "Completed" || existingOrder.Status == "Cancelled")
+                throw new InvalidOperationException($"Cannot update order with status '{existingOrder.Status}'");
+
+            var oldStatus = existingOrder.Status;
+            existingOrder.Status = order.Status;
+
+
+            await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Order {OrderNumber} status updated from {OldStatus} to {NewStatus}",
+             existingOrder.OrderNumber, oldStatus, existingOrder.Status);
+
+            return existingOrder;
+        }
+
+        public async Task<bool> DeleteOrderAsync(int orderId)
+        {
+            var order = await _unitOfWork.Orders.GetByIdAsync(orderId);
+            if(order == null)
+            {
+                return false;
+            }
+            if (order.Status == "Completed")
+                throw new InvalidOperationException("Cannot delete completed orders");
+
+            await _unitOfWork.Orders.DeleteAsync(orderId);
+            await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogWarning("Order {OrderNumber} deleted (ID: {OrderId})", 
+             order.OrderNumber, orderId);
+
+            return true;
+
+        }
+
+        public async Task<Order> CreateOrderFromCartAsync(string userId)
+        {
+            var cartItems = await _unitOfWork.Carts.GetCartWithGamesAsync(userId);
+            if (!cartItems.Any())  // or cartItems.Count() == 0
+            {
+                throw new InvalidOperationException("Cannot create order from empty cart");
+            }
+            foreach (var cartItem in cartItems)
+            {
+                if (cartItem.Game == null)
+                    throw new InvalidOperationException($"Game with ID {cartItem.GameId} not found");
+
+                // Check 1: Is game available?
+                if (!cartItem.Game.IsAvailable)
+                    throw new InvalidOperationException($"Game '{cartItem.Game.Title}' is no longer available");
+
+                // Check 2: Enough stock?
+                if (cartItem.Game.StockQuantity < cartItem.Quantity)
+                    throw new InvalidOperationException($"Insufficient stock for '{cartItem.Game.Title}'");
+            }
+            var order = new Order
+            {
+                UserId = userId,
+                OrderNumber = GenerateOrderNumber(),
+                Status = "Pending",
+                OrderDate = DateTime.UtcNow,
+                OrderItems = new List<OrderItem>()
+            };
+
+            foreach (var cartItem in cartItems)
+            {
+                var orderItem = new OrderItem
+                {
+                    GameId = cartItem.GameId,
+                    Price = cartItem.Price,              
+                    Quantity = cartItem.Quantity,
+                    SubTotal = cartItem.SubTotal,
+                    GameKey = GenerateGameKey(cartItem.GameId)  
+                };
+                order.OrderItems.Add(orderItem);
+            }
+
+            order.TotalAmount = order.OrderItems.Sum(oi => oi.SubTotal);
+
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                // 1. Save order
+                await _unitOfWork.Orders.AddAsync(order);
+                await _unitOfWork.SaveChangesAsync();
+
+                // 2. Clear cart
+                await _unitOfWork.Carts.ClearCartAsync(userId);
+                await _unitOfWork.SaveChangesAsync();
+
+                // 3. Commit transaction
+                await _unitOfWork.CommitTransactionAsync();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                _logger.LogError(ex, "Failed to create order from cart for user {UserId}", userId);
+                throw;
+            }
+
+            return order;
+
+        }
         private string GenerateOrderNumber()
         {
             return $"ORD-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
