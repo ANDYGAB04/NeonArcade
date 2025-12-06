@@ -1,0 +1,32 @@
+.navbar {
+  box-shadow: 0 2px 10px rgba(0, 255, 255, 0.3);
+  border-bottom: 2px solid var(--neon-primary);
+}
+
+.navbar-brand:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+
+.nav-link.active {
+  color: var(--neon-primary) !important;
+  font-weight: bold;
+}
+
+.dropdown-menu {
+  background-color: var(--dark-card);
+  border: 1px solid var(--dark-border);
+}
+
+.dropdown-item {
+  color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+  background-color: var(--dark-bg);
+  color: var(--neon-primary);
+}
+
+.badge {
+  font-size: 0.7rem;
+}
