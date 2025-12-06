@@ -1,1 +1,130 @@
-/* You can add global styles to this file, and also import other style files */
+/* NeonArcade Global Styles */
+
+/* Import Bootstrap (already loaded via angular.json) */
+
+:root {
+  /* NeonArcade Color Palette */
+  --neon-primary: #00ffff;      /* Cyan neon */
+  --neon-secondary: #ff00ff;    /* Magenta neon */
+  --neon-accent: #ffff00;       /* Yellow neon */
+  --dark-bg: #0a0a0f;           /* Dark background */
+  --dark-card: #1a1a2e;         /* Card background */
+  --dark-border: #2a2a3e;       /* Border color */
+  --text-primary: #ffffff;      /* White text */
+  --text-secondary: #b0b0b0;    /* Gray text */
+}
+
+/* Global Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+}
+
+/* Override Bootstrap defaults for dark theme */
+.bg-dark {
+  background-color: var(--dark-bg) !important;
+}
+
+.card {
+  background-color: var(--dark-card);
+  border: 1px solid var(--dark-border);
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background-color: var(--neon-primary);
+  border-color: var(--neon-primary);
+  color: var(--dark-bg);
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background-color: #00cccc;
+  border-color: #00cccc;
+  box-shadow: 0 0 15px var(--neon-primary);
+}
+
+.btn-secondary {
+  background-color: var(--neon-secondary);
+  border-color: var(--neon-secondary);
+  color: var(--dark-bg);
+  font-weight: bold;
+}
+
+.btn-secondary:hover {
+  background-color: #cc00cc;
+  border-color: #cc00cc;
+  box-shadow: 0 0 15px var(--neon-secondary);
+}
+
+/* Neon glow effect */
+.neon-glow {
+  text-shadow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary);
+}
+
+/* Links */
+a {
+  color: var(--neon-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--neon-secondary);
+  text-decoration: underline;
+}
+
+/* Form controls */
+.form-control {
+  background-color: var(--dark-card);
+  border: 1px solid var(--dark-border);
+  color: var(--text-primary);
+}
+
+.form-control:focus {
+  background-color: var(--dark-card);
+  border-color: var(--neon-primary);
+  color: var(--text-primary);
+  box-shadow: 0 0 10px var(--neon-primary);
+}
+
+/* Navbar customization */
+.navbar-dark .navbar-brand {
+  color: var(--neon-primary) !important;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-shadow: 0 0 10px var(--neon-primary);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: var(--text-primary) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: var(--neon-primary) !important;
+}
+
+/* Badge for cart count */
+.badge {
+  background-color: var(--neon-secondary) !important;
+  color: var(--dark-bg);
+}
+
+/* Loading spinner */
+.spinner-border {
+  color: var(--neon-primary);
+}
+
+/* Responsive spacing */
+.container {
+  padding-top: 80px; /* Account for fixed navbar */
+}
+
+/* Footer */
+footer {
+  background-color: var(--dark-card);
+  border-top: 2px solid var(--dark-border);
+  margin-top: 50px;
+}
