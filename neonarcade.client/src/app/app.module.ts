@@ -12,9 +12,13 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 // Shared module
 import { SharedModule } from './shared/shared.module';
 
+// Components
+import { HomeComponent } from './components/home/home.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
