@@ -69,6 +69,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await DbSeeder.SeedRolesAndAdminAsync(services);
+    await DbSeeder.SeedGamesAsync(services);
 }
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
