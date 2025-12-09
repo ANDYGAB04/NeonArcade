@@ -1,25 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AuthGuard } from '../../core/guards/auth.guard';
 
-// Components will be added here as they are created
-// import { CartPageComponent } from './components/cart-page/cart-page.component';
+// Components
+import { CartComponent } from './components/cart/cart.component';
+
+// Shared
+import { SharedModule } from '../../shared/shared.module';
 
 const routes: Routes = [
-  // { path: '', component: CartPageComponent, canActivate: [AuthGuard] }
+  { path: '', component: CartComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
   declarations: [
-    // Components will be declared here
+    CartComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    SharedModule,
     RouterModule.forChild(routes)
-  ],
-  exports: [
-    // Exported components will be listed here
   ]
 })
 export class CartModule { }

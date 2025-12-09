@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { Observable, BehaviorSubject, tap, map } from 'rxjs';
 import { Cart, AddToCartRequest, UpdateCartItemRequest } from '../../../models/cart.model';
 
 /**
@@ -24,7 +24,8 @@ export class CartService {
    * Get the current user's cart
    */
   getCart(): Observable<Cart> {
-    return this.http.get<Cart>(this.API_URL).pipe(
+    return this.http.get<any>(this.API_URL).pipe(
+      map(items => this.mapCartItemsToCart(items)),
       tap(cart => this.cartSubject.next(cart))
     );
   }
@@ -32,26 +33,26 @@ export class CartService {
   /**
    * Add a game to the cart
    */
-  addToCart(request: AddToCartRequest): Observable<Cart> {
-    return this.http.post<Cart>(`${this.API_URL}/items`, request).pipe(
-      tap(cart => this.cartSubject.next(cart))
+  addToCart(request: AddToCartRequest): Observable<any> {
+    return this.http.post<any>(this.API_URL, request).pipe(
+      tap(() => this.refreshCart())
     );
   }
 
   /**
    * Update the quantity of a cart item
    */
-  updateCartItem(itemId: number, request: UpdateCartItemRequest): Observable<Cart> {
-    return this.http.put<Cart>(`${this.API_URL}/items/${itemId}`, request).pipe(
-      tap(cart => this.cartSubject.next(cart))
+  updateCartItem(gameId: number, request: UpdateCartItemRequest): Observable<any> {
+    return this.http.put<any>(`${this.API_URL}/${gameId}`, request).pipe(
+      tap(() => this.refreshCart())
     );
   }
 
   /**
    * Remove an item from the cart
    */
-  removeFromCart(itemId: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/items/${itemId}`).pipe(
+  removeFromCart(gameId: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${gameId}`).pipe(
       tap(() => this.refreshCart())
     );
   }
@@ -60,9 +61,37 @@ export class CartService {
    * Clear all items from the cart
    */
   clearCart(): Observable<void> {
-    return this.http.delete<void>(this.API_URL).pipe(
+    return this.http.delete<void>(`${this.API_URL}/clear`).pipe(
       tap(() => this.cartSubject.next(null))
     );
+  }
+
+  /**
+   * Map cart items array to Cart object
+   * Transforms backend CartItemResponse[] to frontend Cart model
+   */
+  private mapCartItemsToCart(items: any[]): Cart {
+    // Map each item from backend format to frontend format
+    const cartItems = items.map(item => ({
+      id: item.id,
+      gameId: item.gameId,
+      gameTitle: item.game?.title || 'Unknown Game',
+      gamePrice: item.price,
+      gameImageUrl: item.game?.coverImageUrl || '',
+      quantity: item.quantity,
+      subtotal: item.subTotal
+    }));
+
+    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.subtotal, 0);
+    
+    return {
+      id: 0,
+      userId: '',
+      items: cartItems,
+      totalItems: totalItems,
+      totalPrice: totalPrice
+    };
   }
 
   /**
@@ -70,6 +99,15 @@ export class CartService {
    */
   private refreshCart(): void {
     this.getCart().subscribe();
+  }
+
+  /**
+   * Get the current cart item count as observable
+   */
+  getCartItemCount$(): Observable<number> {
+    return this.cart$.pipe(
+      map(cart => cart?.totalItems ?? 0)
+    );
   }
 
   /**
