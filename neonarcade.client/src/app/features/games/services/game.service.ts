@@ -22,7 +22,7 @@ export class GameService {
     
     if (filters) {
       if (filters.searchTerm) params = params.set('searchTerm', filters.searchTerm);
-      if (filters.category) params = params.set('category', filters.category);
+      if (filters.category) params = params.set('genre', filters.category); // Map category to genre
       if (filters.minPrice !== undefined) params = params.set('minPrice', filters.minPrice.toString());
       if (filters.maxPrice !== undefined) params = params.set('maxPrice', filters.maxPrice.toString());
       if (filters.sortBy) params = params.set('sortBy', filters.sortBy);
