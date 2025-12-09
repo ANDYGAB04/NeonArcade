@@ -1,0 +1,109 @@
+<div class="cart-container">
+  <div class="cart-header">
+    <h1 class="page-title">Shopping Cart</h1>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <app-loading-spinner size="large" message="Loading your cart..."></app-loading-spinner>
+  </div>
+
+  <!-- Empty Cart -->
+  <div *ngIf="!loading && (!cart || !cart.items || cart.items.length === 0)" class="empty-cart">
+    <div class="empty-cart-icon">🛒</div>
+    <h2>Your cart is empty</h2>
+    <p>Add some awesome games to get started!</p>
+    <button class="btn-primary" (click)="continueShopping()">
+      Browse Games
+    </button>
+  </div>
+
+  <!-- Cart with Items -->
+  <div *ngIf="!loading && cart && cart.items && cart.items.length > 0" class="cart-content">
+    <!-- Cart Items -->
+    <div class="cart-items-section">
+      <div class="section-header">
+        <h2>Items in Cart ({{ cart.totalItems }})</h2>
+        <button class="btn-clear" (click)="clearCart()">
+          Clear Cart
+        </button>
+      </div>
+
+      <div class="cart-items">
+        <div *ngFor="let item of cart.items" class="cart-item">
+          <div class="item-image">
+            <img 
+              [src]="item.gameImageUrl || 'assets/images/game-placeholder.jpg'" 
+              [alt]="item.gameTitle"
+            />
+          </div>
+
+          <div class="item-details">
+            <h3 class="item-title">{{ item.gameTitle }}</h3>
+            <p class="item-price">${{ item.gamePrice | number: '1.2-2' }} each</p>
+          </div>
+
+          <div class="item-quantity">
+            <label>Quantity:</label>
+            <div class="quantity-controls">
+              <button 
+                class="qty-btn" 
+                (click)="updateQuantity(item.gameId, item.quantity - 1)"
+                [disabled]="item.quantity <= 1 || updatingItemId === item.gameId"
+              >
+                -
+              </button>
+              <span class="qty-value">{{ item.quantity }}</span>
+              <button 
+                class="qty-btn" 
+                (click)="updateQuantity(item.gameId, item.quantity + 1)"
+                [disabled]="updatingItemId === item.gameId"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="item-total">
+            <span class="total-label">Total:</span>
+            <span class="total-value">${{ item.subtotal | number: '1.2-2' }}</span>
+          </div>
+
+          <button class="btn-remove" (click)="removeItem(item.gameId)">
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="cart-summary">
+      <h2>Order Summary</h2>
+
+      <div class="summary-row">
+        <span>Subtotal:</span>
+        <span>${{ cart.totalPrice | number: '1.2-2' }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Tax (estimate):</span>
+        <span>${{ (cart.totalPrice * 0.1) | number: '1.2-2' }}</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-row total">
+        <span>Total:</span>
+        <span>${{ (cart.totalPrice * 1.1) | number: '1.2-2' }}</span>
+      </div>
+
+      <button class="btn-checkout" (click)="checkout()">
+        Proceed to Checkout
+      </button>
+
+      <button class="btn-continue" (click)="continueShopping()">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+</div>
