@@ -1,0 +1,115 @@
+<div class="game-details-container" *ngIf="!loading && game">
+  <!-- Back Button -->
+  <button class="btn-back" (click)="goBack()">
+    ← Back to Games
+  </button>
+
+  <div class="game-details-content">
+    <!-- Left Section: Image -->
+    <div class="game-image-section">
+      <div class="game-main-image">
+        <img 
+          [src]="game.imageUrl || 'assets/images/game-placeholder.jpg'" 
+          [alt]="game.title"
+          class="game-image"
+        />
+        <div *ngIf="isOnSale()" class="discount-badge-large">
+          -{{ game.discountPercentage }}% OFF
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section: Details -->
+    <div class="game-info-section">
+      <h1 class="game-title">{{ game.title }}</h1>
+      
+      <div class="game-meta">
+        <span class="meta-item">
+          <strong>Category:</strong> {{ game.category }}
+        </span>
+        <span class="meta-item">
+          <strong>Developer:</strong> {{ game.developer }}
+        </span>
+        <span class="meta-item">
+          <strong>Publisher:</strong> {{ game.publisher }}
+        </span>
+        <span class="meta-item">
+          <strong>Release Date:</strong> {{ game.releaseDate | date: 'MMM d, yyyy' }}
+        </span>
+      </div>
+
+      <!-- Description -->
+      <div class="game-description">
+        <h3>About This Game</h3>
+        <p>{{ game.description }}</p>
+      </div>
+
+      <!-- Tags -->
+      <div class="game-tags" *ngIf="game.tags && game.tags.length > 0">
+        <span class="tag" *ngFor="let tag of game.tags">{{ tag }}</span>
+      </div>
+
+      <!-- Rating -->
+      <div class="game-rating" *ngIf="game.rating">
+        <span class="rating-label">Rating:</span>
+        <span class="rating-value">{{ game.rating }} / 10</span>
+      </div>
+
+      <!-- Price Section -->
+      <div class="price-section">
+        <div class="price-info">
+          <div *ngIf="isOnSale()" class="original-price">
+            ${{ game.price | number: '1.2-2' }}
+          </div>
+          <div class="final-price">
+            ${{ getFinalPrice() | number: '1.2-2' }}
+          </div>
+          <div *ngIf="isOnSale()" class="savings">
+            Save ${{ (game.price - getFinalPrice()) | number: '1.2-2' }}
+          </div>
+        </div>
+
+        <!-- Stock Status -->
+        <div class="stock-info">
+          <span *ngIf="game.stockQuantity > 0" class="in-stock">
+            ✓ {{ game.stockQuantity }} in stock
+          </span>
+          <span *ngIf="game.stockQuantity === 0" class="out-of-stock">
+            ✗ Out of Stock
+          </span>
+        </div>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="quantity-section" *ngIf="game.stockQuantity > 0">
+        <label>Quantity:</label>
+        <div class="quantity-controls">
+          <button class="qty-btn" (click)="decreaseQuantity()" [disabled]="quantity <= 1">
+            -
+          </button>
+          <span class="qty-value">{{ quantity }}</span>
+          <button class="qty-btn" (click)="increaseQuantity()" [disabled]="quantity >= game.stockQuantity">
+            +
+          </button>
+        </div>
+      </div>
+
+      <!-- Add to Cart Button -->
+      <button 
+        class="btn-add-to-cart" 
+        (click)="addToCart()"
+        [disabled]="game.stockQuantity === 0 || addingToCart"
+      >
+        <span *ngIf="!addingToCart">
+          {{ game.stockQuantity > 0 ? 'Add to Cart' : 'Out of Stock' }}
+        </span>
+        <span *ngIf="addingToCart">Adding to Cart...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <app-loading-spinner size="large" message="Loading game details..."></app-loading-spinner>
+</div>
