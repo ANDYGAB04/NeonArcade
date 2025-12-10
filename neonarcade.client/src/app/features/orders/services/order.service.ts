@@ -24,15 +24,22 @@ export class OrderService {
   /**
    * Get the current user's order history
    */
+  getUserOrders(): Observable<Order[]> {
+    return this.http.get<Order[]>(`/api/order`);
+  }
+
+  /**
+   * Get the current user's order history (alias)
+   */
   getOrderHistory(): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.API_URL}/history`);
+    return this.getUserOrders();
   }
 
   /**
    * Get a specific order by ID
    */
   getOrderById(orderId: number): Observable<Order> {
-    return this.http.get<Order>(`${this.API_URL}/${orderId}`);
+    return this.http.get<Order>(`/api/order/${orderId}`);
   }
 
   // ==================== ADMIN METHODS ====================
