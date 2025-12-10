@@ -1,26 +1,30 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
-// Components will be added here as they are created
-// import { GameListComponent } from './components/game-list/game-list.component';
-// import { GameDetailComponent } from './components/game-detail/game-detail.component';
+// Components
+import { GamesListComponent } from './components/games-list.component';
+import { GameDetailsComponent } from './components/game-details/game-details.component';
+
+// Shared
+import { SharedModule } from '../../shared/shared.module';
 
 const routes: Routes = [
-  // { path: '', component: GameListComponent },
-  // { path: ':id', component: GameDetailComponent }
+  { path: '', component: GamesListComponent },
+  { path: ':id', component: GameDetailsComponent }
 ];
 
 @NgModule({
   declarations: [
-    // Components will be declared here
+    GamesListComponent,
+    GameDetailsComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    SharedModule,
     RouterModule.forChild(routes)
-  ],
-  exports: [
-    // Exported components will be listed here
   ]
 })
 export class GamesModule { }
