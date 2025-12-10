@@ -1,0 +1,68 @@
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="avatar">
+        <span class="avatar-icon">{{ (user?.userName || 'U').charAt(0).toUpperCase() }}</span>
+      </div>
+      <h1 class="username">{{ user?.userName }}</h1>
+      <p class="email">{{ user?.email }}</p>
+      <span class="badge" *ngIf="isAdmin">Admin</span>
+    </div>
+
+    <div class="profile-content">
+      <div class="info-section">
+        <h2 class="section-title">Account Information</h2>
+        
+        <div class="info-item">
+          <span class="info-label">User ID:</span>
+          <span class="info-value">{{ user?.id }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Username:</span>
+          <span class="info-value">{{ user?.userName }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Email:</span>
+          <span class="info-value">{{ user?.email }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Role:</span>
+          <span class="info-value">
+            <span *ngFor="let role of user?.roles; let last = last">
+              {{ role }}<span *ngIf="!last">, </span>
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div class="actions-section">
+        <h2 class="section-title">Quick Actions</h2>
+        
+        <div class="action-buttons">
+          <button class="btn btn-secondary" (click)="goToGames()">
+            <span class="icon">🎮</span>
+            Browse Games
+          </button>
+
+          <button class="btn btn-secondary" (click)="goToCart()">
+            <span class="icon">🛒</span>
+            View Cart
+          </button>
+
+          <button class="btn btn-secondary" (click)="goToOrders()">
+            <span class="icon">📦</span>
+            My Orders
+          </button>
+
+          <button class="btn btn-danger" (click)="logout()">
+            <span class="icon">🚪</span>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

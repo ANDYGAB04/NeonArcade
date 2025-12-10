@@ -1,29 +1,31 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AuthGuard } from '../../core/guards/auth.guard';
 
-// Components will be added here as they are created
-// import { OrderHistoryComponent } from './components/order-history/order-history.component';
-// import { OrderDetailComponent } from './components/order-detail/order-detail.component';
-// import { CheckoutComponent } from './components/checkout/checkout.component';
+// Components
+import { OrdersListComponent } from './components/orders-list/orders-list.component';
+import { OrderDetailsComponent } from './components/order-details/order-details.component';
+
+// Shared
+import { SharedModule } from '../../shared/shared.module';
 
 const routes: Routes = [
-  // { path: 'history', component: OrderHistoryComponent, canActivate: [AuthGuard] },
-  // { path: ':id', component: OrderDetailComponent, canActivate: [AuthGuard] },
-  // { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] }
+  { path: '', component: OrdersListComponent, canActivate: [AuthGuard] },
+  { path: ':id', component: OrderDetailsComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
   declarations: [
-    // Components will be declared here
+    OrdersListComponent,
+    OrderDetailsComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    SharedModule,
     RouterModule.forChild(routes)
-  ],
-  exports: [
-    // Exported components will be listed here
   ]
 })
 export class OrdersModule { }

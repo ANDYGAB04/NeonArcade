@@ -1,0 +1,97 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <!-- Logo/Brand -->
+    <a class="navbar-brand neon-glow" routerLink="/">
+      🎮 NEONARCADE
+    </a>
+
+    <!-- Mobile toggle button -->
+    <button 
+      class="navbar-toggler" 
+      type="button" 
+      (click)="isMenuCollapsed = !isMenuCollapsed"
+      [attr.aria-expanded]="!isMenuCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation links -->
+    <div class="collapse navbar-collapse" [class.show]="!isMenuCollapsed">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/games" routerLinkActive="active">
+            Browse Games
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/games/deals" routerLinkActive="active">
+            Deals
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right side - Cart & User menu -->
+      <div class="d-flex align-items-center">
+        <!-- Cart Icon -->
+        <button 
+          class="btn btn-outline-light me-3 position-relative" 
+          (click)="navigateToCart()"
+          *ngIf="authService.isAuthenticated()">
+          <i class="bi bi-cart3"></i> Cart
+          <span 
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            *ngIf="getCartItemCount() > 0">
+            {{ getCartItemCount() }}
+          </span>
+        </button>
+
+        <!-- User Menu (Logged In) -->
+        <div class="dropdown" *ngIf="currentUser$ | async as user">
+          <button 
+            class="btn btn-outline-light dropdown-toggle" 
+            type="button" 
+            id="userDropdown" 
+            data-bs-toggle="dropdown">
+            👤 {{ user.userName }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" (click)="navigateToProfile()">
+                <i class="bi bi-person"></i> Profile
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" (click)="navigateToOrders()">
+                <i class="bi bi-box"></i> My Orders
+              </a>
+            </li>
+            <li *ngIf="authService.isAdmin()">
+              <hr class="dropdown-divider">
+            </li>
+            <li *ngIf="authService.isAdmin()">
+              <a class="dropdown-item" (click)="navigateToAdmin()">
+                <i class="bi bi-shield"></i> Admin Dashboard
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger" (click)="logout()">
+                <i class="bi bi-box-arrow-right"></i> Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Login/Register (Not Logged In) -->
+        <div *ngIf="!(currentUser$ | async)">
+          <a class="btn btn-outline-light me-2" routerLink="/login">Login</a>
+          <a class="btn btn-primary" routerLink="/register">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

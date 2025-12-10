@@ -1,0 +1,148 @@
+<div class="games-container">
+  <!-- Header Section -->
+  <div class="games-header">
+    <h1 class="page-title">Browse Games</h1>
+    <p class="page-subtitle">Discover amazing games for your collection</p>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <!-- Search Bar -->
+    <div class="search-box">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+        placeholder="Search games..."
+        class="search-input"
+      />
+      <button class="search-btn" (click)="onSearch()">
+        🔍 Search
+      </button>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="filter-group">
+      <label for="category">Category:</label>
+      <select
+        id="category"
+        [(ngModel)]="selectedCategory"
+        (change)="onCategoryChange()"
+        class="filter-select"
+      >
+        <option value="">All Categories</option>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Sort Filter -->
+    <div class="filter-group">
+      <label for="sort">Sort By:</label>
+      <select
+        id="sort"
+        [(ngModel)]="sortBy"
+        (change)="onSortChange()"
+        class="filter-select"
+      >
+        <option value="title">Name</option>
+        <option value="price">Price: Low to High</option>
+        <option value="priceDesc">Price: High to Low</option>
+        <option value="releaseDate">Release Date</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <app-loading-spinner size="large" message="Loading games..."></app-loading-spinner>
+  </div>
+
+  <!-- Games Grid -->
+  <div *ngIf="!loading && games.length > 0" class="games-grid">
+    <div
+      *ngFor="let game of games"
+      class="game-card"
+      (click)="viewGameDetails(game.id)"
+    >
+      <!-- Discount Badge -->
+      <div *ngIf="isOnSale(game)" class="discount-badge">
+        -{{ game.discountPercentage }}%
+      </div>
+
+      <!-- Game Image -->
+      <div class="game-image">
+        <img
+          [src]="game.imageUrl || 'assets/images/game-placeholder.jpg'"
+          [alt]="game.title"
+          class="game-img"
+        />
+      </div>
+
+      <!-- Game Info -->
+      <div class="game-info">
+        <h3 class="game-title">{{ game.title }}</h3>
+        <p class="game-category">{{ game.category }}</p>
+
+        <!-- Price Section -->
+        <div class="price-section">
+          <span *ngIf="isOnSale(game)" class="original-price">
+            ${{ game.price | number: '1.2-2' }}
+          </span>
+          <span class="final-price">
+            ${{ getFinalPrice(game) | number: '1.2-2' }}
+          </span>
+        </div>
+
+        <!-- Stock Status -->
+        <div class="stock-status">
+          <span *ngIf="game.stockQuantity > 0" class="in-stock">
+            ✓ In Stock
+          </span>
+          <span *ngIf="game.stockQuantity === 0" class="out-of-stock">
+            ✗ Out of Stock
+          </span>
+        </div>
+
+        <!-- Add to Cart Button -->
+        <button
+          class="btn-add-cart"
+          (click)="addToCart(game, $event)"
+          [disabled]="game.stockQuantity === 0"
+        >
+          {{ game.stockQuantity > 0 ? 'Add to Cart' : 'Unavailable' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Games Found -->
+  <div *ngIf="!loading && games.length === 0" class="no-games">
+    <h2>No games found</h2>
+    <p>Try adjusting your search or filters</p>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!loading && games.length > 0 && totalPages > 1" class="pagination">
+    <button
+      class="page-btn"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      ← Previous
+    </button>
+
+    <span class="page-info">
+      Page {{ currentPage }} of {{ totalPages }}
+    </span>
+
+    <button
+      class="page-btn"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      Next →
+    </button>
+  </div>
+</div>

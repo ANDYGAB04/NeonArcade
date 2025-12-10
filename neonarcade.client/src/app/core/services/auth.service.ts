@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, map } from 'rxjs';
 import { Router } from '@angular/router';
 import { LoginRequest, RegisterRequest, AuthResponse, User } from '../../models/user.model';
 import { StorageService } from './storage.service';
@@ -9,7 +9,6 @@ import { StorageService } from './storage.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = '/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -34,36 +33,40 @@ export class AuthService {
   /**
    * Login user with email and password
    */
-  login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials)
+  login(credentials: LoginRequest): Observable<any> {
+    return this.http.post<any>('/login?useCookies=false&useSessionCookies=false', credentials)
       .pipe(
-        tap(response => this.handleAuthResponse(response))
+        tap(response => {
+          // Identity API returns tokenType, accessToken, expiresIn, refreshToken
+          if (response.accessToken) {
+            this.storageService.setToken(response.accessToken);
+            // Create user object from credentials since Identity API doesn't return user info
+            const user: User = {
+              id: '',
+              userName: credentials.email.split('@')[0], // Extract username from email
+              email: credentials.email,
+              roles: []
+            };
+            this.storageService.setUser(user);
+            this.currentUserSubject.next(user);
+          }
+        })
       );
   }
 
   /**
    * Register a new user
    */
-  register(data: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/register`, data)
-      .pipe(
-        tap(response => this.handleAuthResponse(response))
-      );
-  }
-
-  /**
-   * Handle authentication response (store token and user data)
-   */
-  private handleAuthResponse(response: AuthResponse): void {
-    this.storageService.setToken(response.token);
-    const user: User = {
-      id: '',
-      userName: response.userName,
-      email: response.email,
-      roles: response.roles
-    };
-    this.storageService.setUser(user);
-    this.currentUserSubject.next(user);
+  register(data: RegisterRequest): Observable<any> {
+    return this.http.post<any>('/register', {
+      email: data.email,
+      password: data.password
+    }).pipe(
+      tap(() => {
+        // After successful registration, automatically login
+        this.login({ email: data.email, password: data.password }).subscribe();
+      })
+    );
   }
 
   /**

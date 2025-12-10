@@ -1,0 +1,138 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">NEON ARCADE</h1>
+      <p class="hero-subtitle">Your Ultimate Gaming Destination</p>
+      <p class="hero-description">
+        Discover the latest and greatest games. Build your digital collection today!
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-primary" (click)="navigateToGames()">
+          Browse Games
+        </button>
+        <button class="btn-secondary" (click)="navigateToDeals()">
+          View Deals
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Games Section -->
+  <section class="section" *ngIf="featuredGames.length > 0">
+    <div class="section-header">
+      <h2 class="section-title">Featured Games</h2>
+      <button class="btn-see-all" (click)="navigateToGames()">
+        See All →
+      </button>
+    </div>
+
+    <div class="games-grid">
+      <div
+        *ngFor="let game of featuredGames"
+        class="game-card"
+        (click)="navigateToGameDetails(game.id)"
+      >
+        <div class="game-image">
+          <img
+            [src]="game.imageUrl || 'assets/images/game-placeholder.jpg'"
+            [alt]="game.title"
+          />
+          <div class="featured-badge">⭐ Featured</div>
+        </div>
+        <div class="game-info">
+          <h3 class="game-title">{{ game.title }}</h3>
+          <p class="game-category">{{ game.category }}</p>
+          <div class="game-price">
+            ${{ game.price | number: '1.2-2' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- New Releases Section -->
+  <section class="section" *ngIf="newReleases.length > 0">
+    <div class="section-header">
+      <h2 class="section-title">New Releases</h2>
+      <button class="btn-see-all" (click)="navigateToGames()">
+        See All →
+      </button>
+    </div>
+
+    <div class="games-grid">
+      <div
+        *ngFor="let game of newReleases"
+        class="game-card"
+        (click)="navigateToGameDetails(game.id)"
+      >
+        <div class="game-image">
+          <img
+            [src]="game.imageUrl || 'assets/images/game-placeholder.jpg'"
+            [alt]="game.title"
+          />
+          <div class="new-badge">🆕 New</div>
+        </div>
+        <div class="game-info">
+          <h3 class="game-title">{{ game.title }}</h3>
+          <p class="game-category">{{ game.category }}</p>
+          <div class="game-price">
+            ${{ game.price | number: '1.2-2' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deals Section -->
+  <section class="section deals-section" *ngIf="deals.length > 0">
+    <div class="section-header">
+      <h2 class="section-title">🔥 Hot Deals</h2>
+      <button class="btn-see-all" (click)="navigateToDeals()">
+        See All Deals →
+      </button>
+    </div>
+
+    <div class="games-grid">
+      <div
+        *ngFor="let game of deals"
+        class="game-card"
+        (click)="navigateToGameDetails(game.id)"
+      >
+        <div class="game-image">
+          <img
+            [src]="game.imageUrl || 'assets/images/game-placeholder.jpg'"
+            [alt]="game.title"
+          />
+          <div class="discount-badge" *ngIf="game.discountPercentage">
+            -{{ game.discountPercentage }}%
+          </div>
+        </div>
+        <div class="game-info">
+          <h3 class="game-title">{{ game.title }}</h3>
+          <p class="game-category">{{ game.category }}</p>
+          <div class="price-section">
+            <span class="original-price">${{ game.price | number: '1.2-2' }}</span>
+            <span class="sale-price">
+              ${{ (game.price - (game.price * (game.discountPercentage || 0) / 100)) | number: '1.2-2' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Ready to Start Gaming?</h2>
+      <p>Join thousands of gamers and build your dream collection today!</p>
+      <button class="btn-primary" *ngIf="!isAuthenticated()" routerLink="/register">
+        Sign Up Now
+      </button>
+      <button class="btn-primary" *ngIf="isAuthenticated()" (click)="navigateToGames()">
+        Browse Games
+      </button>
+    </div>
+  </section>
+</div>

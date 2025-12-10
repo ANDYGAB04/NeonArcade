@@ -2,16 +2,30 @@ export interface Game {
   id: number;
   title: string;
   description: string;
+  shortDescription?: string;
   price: number;
-  imageUrl?: string;
-  category: string;
-  releaseDate: Date;
+  discountPrice?: number;
+  coverImageUrl?: string;
+  trailerUrl?: string;
+  screenshotUrls?: string[];
   developer: string;
   publisher: string;
+  releaseDate: Date;
+  ageRating?: string;
+  genres?: string[];
+  platforms?: string[];
   tags?: string[];
-  rating?: number;
+  minimumRequirements?: string;
+  recommendedRequirements?: string;
   stockQuantity: number;
+  isAvailable: boolean;
   isFeatured: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  
+  // Computed properties
+  imageUrl?: string;  // Alias for coverImageUrl
+  category?: string;  // First genre
   discountPercentage?: number;
   finalPrice?: number;
 }
