@@ -17,15 +17,16 @@ export class OrderService {
   /**
    * Checkout and create an order from the current cart
    */
-  checkout(request: CheckoutRequest): Observable<Order> {
-    return this.http.post<Order>(`${this.API_URL}/checkout`, request);
+  // Server expects POST /api/orders/checkout with no request body
+  checkout(): Observable<Order> {
+    return this.http.post<Order>(`${this.API_URL}/checkout`, null as any);
   }
 
   /**
    * Get the current user's order history
    */
   getUserOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(`/api/order`);
+    return this.http.get<Order[]>(`${this.API_URL}`);
   }
 
   /**
@@ -39,7 +40,7 @@ export class OrderService {
    * Get a specific order by ID
    */
   getOrderById(orderId: number): Observable<Order> {
-    return this.http.get<Order>(`/api/order/${orderId}`);
+    return this.http.get<Order>(`${this.API_URL}/${orderId}`);
   }
 
   // ==================== ADMIN METHODS ====================

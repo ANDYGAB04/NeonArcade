@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
@@ -15,11 +15,13 @@ export class HeaderComponent implements OnInit {
   currentUser$: Observable<User | null>;
   cartItemCount$: Observable<number> = new Observable();
   isMenuCollapsed = true;
+  isDropdownOpen = false;
 
   constructor(
     public authService: AuthService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private elementRef: ElementRef
   ) {
     this.currentUser$ = this.authService.currentUser$;
   }
@@ -29,6 +31,22 @@ export class HeaderComponent implements OnInit {
     this.cartService.cart$.subscribe(cart => {
       // Update cart count when cart changes
     });
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    // Close dropdown when clicking outside
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.isDropdownOpen = false;
+    }
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  closeDropdown(): void {
+    this.isDropdownOpen = false;
   }
 
   getCartItemCount(): number {

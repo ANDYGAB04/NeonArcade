@@ -10,30 +10,38 @@ import { User } from '../../../../models/user.model';
   standalone: false
 })
 export class ProfileComponent implements OnInit {
-  user: User | null = null;
-  isAdmin = false;
+user: User | null = null;
+isAdmin = false;
+showLogoutModal = false;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+constructor(
+  private authService: AuthService,
+  private router: Router
+) {}
 
-  ngOnInit(): void {
-    this.loadUserProfile();
-  }
+ngOnInit(): void {
+  this.loadUserProfile();
+}
 
-  loadUserProfile(): void {
-    this.user = this.authService.getCurrentUser();
-    this.isAdmin = this.authService.isAdmin();
-  }
+loadUserProfile(): void {
+  this.user = this.authService.getCurrentUser();
+  this.isAdmin = this.authService.isAdmin();
+}
 
-  logout(): void {
-    if (confirm('Are you sure you want to logout?')) {
-      this.authService.logout();
-    }
-  }
+logout(): void {
+  this.showLogoutModal = true;
+}
 
-  goToOrders(): void {
+confirmLogout(): void {
+  this.showLogoutModal = false;
+  this.authService.logout();
+}
+
+cancelLogout(): void {
+  this.showLogoutModal = false;
+}
+
+goToOrders(): void {
     this.router.navigate(['/orders']);
   }
 

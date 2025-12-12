@@ -2,11 +2,12 @@
   <div class="profile-card">
     <div class="profile-header">
       <div class="avatar">
-        <span class="avatar-icon">{{ (user?.userName || 'U').charAt(0).toUpperCase() }}</span>
+        <span class="avatar-icon">{{ (user?.userName || user?.email || 'U').charAt(0).toUpperCase() }}</span>
       </div>
-      <h1 class="username">{{ user?.userName }}</h1>
+      <h1 class="username">{{ user?.userName || (user?.email ? user!.email!.split('@')[0] : 'User') }}</h1>
       <p class="email">{{ user?.email }}</p>
-      <span class="badge" *ngIf="isAdmin">Admin</span>
+      <span class="badge admin-badge" *ngIf="isAdmin">🛡️ Admin</span>
+      <span class="badge user-badge" *ngIf="!isAdmin">👤 User</span>
     </div>
 
     <div class="profile-content">
@@ -14,27 +15,13 @@
         <h2 class="section-title">Account Information</h2>
         
         <div class="info-item">
-          <span class="info-label">User ID:</span>
-          <span class="info-value">{{ user?.id }}</span>
-        </div>
-
-        <div class="info-item">
           <span class="info-label">Username:</span>
-          <span class="info-value">{{ user?.userName }}</span>
+          <span class="info-value">{{ user?.userName || (user?.email ? user!.email!.split('@')[0] : 'N/A') }}</span>
         </div>
 
         <div class="info-item">
           <span class="info-label">Email:</span>
-          <span class="info-value">{{ user?.email }}</span>
-        </div>
-
-        <div class="info-item">
-          <span class="info-label">Role:</span>
-          <span class="info-value">
-            <span *ngFor="let role of user?.roles; let last = last">
-              {{ role }}<span *ngIf="!last">, </span>
-            </span>
-          </span>
+          <span class="info-value">{{ user?.email || 'N/A' }}</span>
         </div>
       </div>
 
@@ -63,6 +50,19 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showLogoutModal" (click)="cancelLogout()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-icon">🚪</div>
+    <h2 class="modal-title">Logout</h2>
+    <p class="modal-message">Are you sure you want to logout?</p>
+    <div class="modal-actions">
+      <button class="btn-modal btn-cancel" (click)="cancelLogout()">Cancel</button>
+      <button class="btn-modal btn-confirm" (click)="confirmLogout()">Logout</button>
     </div>
   </div>
 </div>

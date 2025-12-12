@@ -68,13 +68,13 @@
     >
       <!-- Discount Badge -->
       <div *ngIf="isOnSale(game)" class="discount-badge">
-        -{{ game.discountPercentage }}%
+        -{{ getDiscountPercentage(game) }}%
       </div>
 
       <!-- Game Image -->
       <div class="game-image">
         <img
-          [src]="game.imageUrl || 'assets/images/game-placeholder.jpg'"
+          [src]="game.coverImageUrl || 'assets/images/game-placeholder.jpg'"
           [alt]="game.title"
           class="game-img"
         />
@@ -83,7 +83,7 @@
       <!-- Game Info -->
       <div class="game-info">
         <h3 class="game-title">{{ game.title }}</h3>
-        <p class="game-category">{{ game.category }}</p>
+        <p class="game-category">{{ game.genres?.[0] || 'Game' }}</p>
 
         <!-- Price Section -->
         <div class="price-section">

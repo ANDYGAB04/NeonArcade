@@ -18,38 +18,7 @@ namespace NeonArcade.Server.Services.Implementations
 
         public async Task<PagedResult<Game>> GetGamesAsync(GameQueryParameters parameters)
         {
-            Func<IQueryable<Game>, IOrderedQueryable<Game>>? orderBy = null;
-
-            if (!string.IsNullOrEmpty(parameters.SortBy))
-            {
-                bool ascending = parameters.SortOrder?.ToLower() != "desc";
-
-                orderBy = parameters.SortBy.ToLower() switch
-                {
-                    "title" => q => ascending ? q.OrderBy(g => g.Title) : q.OrderByDescending(g => g.Title),
-                    "price" => q => ascending ? q.OrderBy(g => g.Price) : q.OrderByDescending(g => g.Price),
-                    "releasedate" => q => ascending ? q.OrderBy(g => g.ReleaseDate) : q.OrderByDescending(g => g.ReleaseDate),
-                    _ => q => q.OrderByDescending(g => g.CreatedAt)
-                };
-            }
-            else
-            {
-                orderBy = q => q.OrderByDescending(g => g.CreatedAt);
-            }
-
-            return await _unitOfWork.Games.GetPagedAsync(
-                parameters.PageNumber,
-                parameters.PageSize,
-                filter: g =>
-                    (string.IsNullOrEmpty(parameters.SearchTerm) ||
-                     g.Title.ToLower().Contains(parameters.SearchTerm.ToLower()) ||
-                     g.Description.ToLower().Contains(parameters.SearchTerm.ToLower())) &&
-                    (!parameters.MinPrice.HasValue || g.Price >= parameters.MinPrice.Value) &&
-                    (!parameters.MaxPrice.HasValue || g.Price <= parameters.MaxPrice.Value) &&
-                    (!parameters.IsAvailable.HasValue || g.IsAvailable == parameters.IsAvailable.Value) &&
-                    (!parameters.IsFeatured.HasValue || g.IsFeatured == parameters.IsFeatured.Value),
-                orderBy: orderBy
-            );
+            return await _unitOfWork.Games.GetGamesFilteredAsync(parameters);
         }
 
         public async Task<Game?> GetGameByIdAsync(int id)

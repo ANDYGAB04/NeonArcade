@@ -6,21 +6,24 @@ import { FormsModule } from '@angular/forms';
 // Components
 import { GamesListComponent } from './components/games-list.component';
 import { GameDetailsComponent } from './components/game-details/game-details.component';
+import { DealsListComponent } from './components/deals-list/deals-list.component';
 
 // Shared
 import { SharedModule } from '../../shared/shared.module';
 
 const routes: Routes = [
   { path: '', component: GamesListComponent },
+  { path: 'deals', component: DealsListComponent },
   { path: ':id', component: GameDetailsComponent }
 ];
 
 @NgModule({
-  declarations: [
-    GamesListComponent,
-    GameDetailsComponent
-  ],
-  imports: [
+declarations: [
+  GamesListComponent,
+  GameDetailsComponent,
+  DealsListComponent
+],
+imports: [
     CommonModule,
     FormsModule,
     SharedModule,

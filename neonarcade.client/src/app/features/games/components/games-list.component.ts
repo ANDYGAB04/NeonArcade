@@ -129,14 +129,17 @@ export class GamesListComponent implements OnInit {
 
   // Calculate final price with discount
   getFinalPrice(game: Game): number {
-    if (game.discountPercentage && game.discountPercentage > 0) {
-      return game.price - (game.price * game.discountPercentage / 100);
-    }
-    return game.price;
+    return game.discountPrice || game.price;
+  }
+
+  // Calculate discount percentage
+  getDiscountPercentage(game: Game): number {
+    if (!game.discountPrice) return 0;
+    return Math.round(((game.price - game.discountPrice) / game.price) * 100);
   }
 
   // Check if game is on sale
   isOnSale(game: Game): boolean {
-    return !!game.discountPercentage && game.discountPercentage > 0;
+    return !!game.discountPrice && game.discountPrice < game.price;
   }
 }

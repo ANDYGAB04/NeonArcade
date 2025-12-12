@@ -7,19 +7,22 @@ import { AuthGuard } from '../../core/guards/auth.guard';
 // Components
 import { OrdersListComponent } from './components/orders-list/orders-list.component';
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 
 // Shared
 import { SharedModule } from '../../shared/shared.module';
 
 const routes: Routes = [
   { path: '', component: OrdersListComponent, canActivate: [AuthGuard] },
+  { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] },
   { path: ':id', component: OrderDetailsComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
   declarations: [
     OrdersListComponent,
-    OrderDetailsComponent
+    OrderDetailsComponent,
+    CheckoutComponent
   ],
   imports: [
     CommonModule,

@@ -9,12 +9,12 @@
     <div class="game-image-section">
       <div class="game-main-image">
         <img 
-          [src]="game.imageUrl || 'assets/images/game-placeholder.jpg'" 
+          [src]="game.coverImageUrl || 'assets/images/game-placeholder.jpg'" 
           [alt]="game.title"
           class="game-image"
         />
         <div *ngIf="isOnSale()" class="discount-badge-large">
-          -{{ game.discountPercentage }}% OFF
+          -{{ getDiscountPercentage() }}% OFF
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
       
       <div class="game-meta">
         <span class="meta-item">
-          <strong>Category:</strong> {{ game.category }}
+          <strong>Genre:</strong> {{ game.genres?.join(', ') || 'N/A' }}
         </span>
         <span class="meta-item">
           <strong>Developer:</strong> {{ game.developer }}
@@ -35,6 +35,9 @@
         </span>
         <span class="meta-item">
           <strong>Release Date:</strong> {{ game.releaseDate | date: 'MMM d, yyyy' }}
+        </span>
+        <span class="meta-item" *ngIf="game.platforms && game.platforms.length > 0">
+          <strong>Platforms:</strong> {{ game.platforms.join(', ') }}
         </span>
       </div>
 
@@ -49,10 +52,10 @@
         <span class="tag" *ngFor="let tag of game.tags">{{ tag }}</span>
       </div>
 
-      <!-- Rating -->
-      <div class="game-rating" *ngIf="game.rating">
-        <span class="rating-label">Rating:</span>
-        <span class="rating-value">{{ game.rating }} / 10</span>
+      <!-- Age Rating -->
+      <div class="game-age-rating" *ngIf="game.ageRating">
+        <span class="rating-label">Age Rating:</span>
+        <span class="rating-value">{{ game.ageRating }}</span>
       </div>
 
       <!-- Price Section -->
