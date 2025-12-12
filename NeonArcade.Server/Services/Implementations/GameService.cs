@@ -22,13 +22,13 @@ namespace NeonArcade.Server.Services.Implementations
 
             if (!string.IsNullOrEmpty(parameters.SortBy))
             {
-                bool ascending = parameters.SortOrder?.ToLower() != "desc";
-
                 orderBy = parameters.SortBy.ToLower() switch
                 {
-                    "title" => q => ascending ? q.OrderBy(g => g.Title) : q.OrderByDescending(g => g.Title),
-                    "price" => q => ascending ? q.OrderBy(g => g.Price) : q.OrderByDescending(g => g.Price),
-                    "releasedate" => q => ascending ? q.OrderBy(g => g.ReleaseDate) : q.OrderByDescending(g => g.ReleaseDate),
+                    "title" => q => q.OrderBy(g => g.Title),
+                    "titledesc" => q => q.OrderByDescending(g => g.Title),
+                    "price" => q => q.OrderBy(g => g.DiscountPrice ?? g.Price),
+                    "pricedesc" => q => q.OrderByDescending(g => g.DiscountPrice ?? g.Price),
+                    "releasedate" => q => q.OrderByDescending(g => g.ReleaseDate),
                     _ => q => q.OrderByDescending(g => g.CreatedAt)
                 };
             }
