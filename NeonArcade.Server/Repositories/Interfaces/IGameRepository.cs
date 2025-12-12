@@ -1,4 +1,5 @@
 ﻿using NeonArcade.Server.Models;
+using NeonArcade.Server.Models.DTOs;
 
 namespace NeonArcade.Server.Repositories.Interfaces
 {
@@ -12,5 +13,6 @@ namespace NeonArcade.Server.Repositories.Interfaces
         Task<IEnumerable<Game>> GetDiscountedGamesAsync();
         Task<Game?> GetGameWithDetailsAsync(int id);  
         Task<bool> IsGameInStockAsync(int gameId, int quantity);
+        Task<PagedResult<Game>> GetGamesFilteredAsync(GameQueryParameters parameters);
     }
 }
