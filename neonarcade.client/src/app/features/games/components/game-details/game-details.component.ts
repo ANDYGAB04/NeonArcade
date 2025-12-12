@@ -51,14 +51,16 @@ export class GameDetailsComponent implements OnInit {
 
   getFinalPrice(): number {
     if (!this.game) return 0;
-    if (this.game.discountPercentage && this.game.discountPercentage > 0) {
-      return this.game.price - (this.game.price * this.game.discountPercentage / 100);
-    }
-    return this.game.price;
+    return this.game.discountPrice || this.game.price;
+  }
+
+  getDiscountPercentage(): number {
+    if (!this.game || !this.game.discountPrice) return 0;
+    return Math.round(((this.game.price - this.game.discountPrice) / this.game.price) * 100);
   }
 
   isOnSale(): boolean {
-    return !!this.game?.discountPercentage && this.game.discountPercentage > 0;
+    return !!this.game?.discountPrice && this.game.discountPrice < this.game.price;
   }
 
   increaseQuantity(): void {
