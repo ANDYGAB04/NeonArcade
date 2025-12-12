@@ -53,3 +53,16 @@
     </div>
   </div>
 </div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showLogoutModal" (click)="cancelLogout()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-icon">🚪</div>
+    <h2 class="modal-title">Logout</h2>
+    <p class="modal-message">Are you sure you want to logout?</p>
+    <div class="modal-actions">
+      <button class="btn-modal btn-cancel" (click)="cancelLogout()">Cancel</button>
+      <button class="btn-modal btn-confirm" (click)="confirmLogout()">Logout</button>
+    </div>
+  </div>
+</div>
