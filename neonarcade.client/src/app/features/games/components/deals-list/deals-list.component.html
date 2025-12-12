@@ -1,0 +1,88 @@
+<div class="deals-container">
+  <!-- Header Section -->
+  <div class="deals-header">
+    <h1 class="page-title">🔥 Hot Deals</h1>
+    <p class="page-subtitle">Grab amazing discounts on your favorite games before they're gone!</p>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <app-loading-spinner size="large" message="Loading deals..."></app-loading-spinner>
+  </div>
+
+  <!-- Games Grid -->
+  <div *ngIf="!loading && games.length > 0" class="games-grid">
+    <div
+      *ngFor="let game of games"
+      class="game-card deal-card"
+      (click)="viewGameDetails(game.id)"
+    >
+      <!-- Discount Badge -->
+      <div class="discount-badge">
+        -{{ getDiscountPercentage(game) }}%
+      </div>
+
+      <!-- Game Image -->
+      <div class="game-image">
+        <img
+          [src]="game.coverImageUrl || 'assets/images/game-placeholder.jpg'"
+          [alt]="game.title"
+          class="game-img"
+        />
+        <div class="deal-overlay">
+          <span class="deal-tag">LIMITED TIME</span>
+        </div>
+      </div>
+
+      <!-- Game Info -->
+      <div class="game-info">
+        <h3 class="game-title">{{ game.title }}</h3>
+        <p class="game-category">{{ game.genres?.[0] || 'Game' }}</p>
+
+        <!-- Price Section -->
+        <div class="price-section">
+          <span class="original-price">
+            ${{ game.price | number: '1.2-2' }}
+          </span>
+          <span class="final-price">
+            ${{ getFinalPrice(game) | number: '1.2-2' }}
+          </span>
+        </div>
+
+        <!-- Savings -->
+        <div class="savings-info">
+          <span class="savings-badge">
+            You save ${{ getSavings(game) | number: '1.2-2' }}
+          </span>
+        </div>
+
+        <!-- Stock Status -->
+        <div class="stock-status">
+          <span *ngIf="game.stockQuantity > 0" class="in-stock">
+            ✓ In Stock
+          </span>
+          <span *ngIf="game.stockQuantity === 0" class="out-of-stock">
+            ✗ Out of Stock
+          </span>
+        </div>
+
+        <!-- Add to Cart Button -->
+        <button
+          class="btn-add-cart"
+          (click)="addToCart(game, $event)"
+          [disabled]="game.stockQuantity === 0"
+        >
+          {{ game.stockQuantity > 0 ? 'Add to Cart' : 'Unavailable' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Deals Found -->
+  <div *ngIf="!loading && games.length === 0" class="no-deals">
+    <div class="no-deals-icon">🏷️</div>
+    <h2>No Deals Available</h2>
+    <p>Check back later for amazing discounts!</p>
+    <a class="btn-browse" routerLink="/games">Browse All Games</a>
+  </div>
+</div>
