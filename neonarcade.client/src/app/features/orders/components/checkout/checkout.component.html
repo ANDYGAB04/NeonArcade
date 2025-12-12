@@ -1,0 +1,52 @@
+<div class="checkout-wrap">
+  <div class="checkout-inner">
+    <header class="checkout-top">
+      <h1>Checkout</h1>
+      <p class="subtitle">Review your items and complete your purchase</p>
+    </header>
+
+    <div *ngIf="loading" class="loading-center">
+      <app-loading-spinner size="large" message="Loading cart..."></app-loading-spinner>
+    </div>
+
+    <section *ngIf="!loading && (!cart || cart.items.length === 0)" class="empty-checkout">
+      <h2>Your cart is empty</h2>
+      <p>Add some awesome games to get started.</p>
+      <button class="btn-outline" (click)="continueShopping()">Browse Games</button>
+    </section>
+
+    <main *ngIf="!loading && cart && cart.items.length > 0" class="grid">
+      <div class="card items-card">
+        <h2 class="card-title">Items</h2>
+        <ul class="items-list">
+          <li *ngFor="let item of cart.items" class="item-row">
+            <img class="thumb" [src]="item.gameImageUrl || 'assets/images/game-placeholder.jpg'" [alt]="item.gameTitle"/>
+            <div class="meta">
+              <div class="title">{{ item.gameTitle }}</div>
+              <div class="meta-row">Qty: <strong>{{ item.quantity }}</strong></div>
+            </div>
+            <div class="price">${{ item.subtotal | number:'1.2-2' }}</div>
+          </li>
+        </ul>
+      </div>
+
+      <aside class="card summary-card">
+        <h2 class="card-title">Order Summary</h2>
+        <div class="summary-body">
+          <div class="line"><span>Subtotal</span><span>${{ cart.totalPrice | number:'1.2-2' }}</span></div>
+          <div class="line"><span>Tax (10%)</span><span>${{ (cart.totalPrice * 0.1) | number:'1.2-2' }}</span></div>
+          <div class="line total"><span>Total</span><span>${{ (cart.totalPrice * 1.1) | number:'1.2-2' }}</span></div>
+
+          <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+          <button class="btn-gradient" (click)="placeOrder()" [disabled]="processing">
+            <span *ngIf="!processing">Place Order</span>
+            <span *ngIf="processing">Processing...</span>
+          </button>
+
+          <button class="btn-ghost" (click)="continueShopping()">Continue Shopping</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+</div>
