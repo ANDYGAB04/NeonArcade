@@ -52,35 +52,40 @@
         <!-- User Menu (Logged In) -->
         <div class="dropdown" *ngIf="currentUser$ | async as user">
           <button 
-            class="btn btn-outline-light dropdown-toggle" 
+            class="btn-user-menu" 
             type="button" 
-            id="userDropdown" 
-            data-bs-toggle="dropdown">
-            👤 {{ user.userName }}
+            (click)="toggleDropdown(); $event.stopPropagation()">
+            <span class="user-avatar">{{ user.userName.charAt(0).toUpperCase() }}</span>
+            <span class="user-name">{{ user.userName }}</span>
+            <span class="dropdown-arrow" [class.open]="isDropdownOpen">▼</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end">
+          <ul class="dropdown-menu dropdown-menu-end" [class.show]="isDropdownOpen">
+            <li class="dropdown-header">
+              <span class="user-email">{{ user.email }}</span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
             <li>
-              <a class="dropdown-item" (click)="navigateToProfile()">
-                <i class="bi bi-person"></i> Profile
+              <a class="dropdown-item" (click)="navigateToProfile(); closeDropdown()">
+                <span class="item-icon">👤</span> Profile
               </a>
             </li>
             <li>
-              <a class="dropdown-item" (click)="navigateToOrders()">
-                <i class="bi bi-box"></i> My Orders
+              <a class="dropdown-item" (click)="navigateToOrders(); closeDropdown()">
+                <span class="item-icon">📦</span> My Orders
               </a>
             </li>
             <li *ngIf="authService.isAdmin()">
               <hr class="dropdown-divider">
             </li>
             <li *ngIf="authService.isAdmin()">
-              <a class="dropdown-item" (click)="navigateToAdmin()">
-                <i class="bi bi-shield"></i> Admin Dashboard
+              <a class="dropdown-item admin-item" (click)="navigateToAdmin(); closeDropdown()">
+                <span class="item-icon">🛡️</span> Admin Dashboard
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-              <a class="dropdown-item text-danger" (click)="logout()">
-                <i class="bi bi-box-arrow-right"></i> Logout
+              <a class="dropdown-item logout-item" (click)="logout(); closeDropdown()">
+                <span class="item-icon">🚪</span> Logout
               </a>
             </li>
           </ul>
